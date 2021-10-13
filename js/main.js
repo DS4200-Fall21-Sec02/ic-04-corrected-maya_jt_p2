@@ -33,8 +33,12 @@ d3.csv("data/data.csv").then(function (data) {
     //number of rows
     const r =  data.map( d => d.x);
 
+    const list = ["A", "B", "C", "D", "E", "F", "G"]
     //x axis
-    const x = d3.scaleBand().domain(r).range([0, width + 30]).padding(1,2);
+    const x = d3.scaleBand()
+        .domain(list)
+        .range([0, width + 30])
+    `   .padding(1,2);
 
     //y axis
     const y = d3.scaleLinear()
