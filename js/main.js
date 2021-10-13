@@ -38,7 +38,7 @@ d3.csv("data/data.csv").then(function (data) {
     const x = d3.scaleBand()
         .domain(list)
         .range([0, width + 30])
-    `   .padding(1,2);
+        .padding(1,2);
 
     //y axis
     const y = d3.scaleLinear()
