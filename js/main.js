@@ -20,6 +20,22 @@ let svg1 = d3.select('#d3-container')
   .style('border', 'solid')
   .attr('viewBox', [0, 0, width + margin.left + margin.right, height + margin.top + margin.bottom].join(' '))
 
+//https://observablehq.com/@bsaienko/animated-bar-chart-with-tooltip
+//Used this website to create tooltip
+let tooltip = d3
+    .select('body')
+    .append('div')
+    .attr('class', 'd3-tooltip')
+    .style('position', 'absolute')
+    .style('z-index', '10')
+    .style('visibility', 'hidden')
+    .style('padding', '10px')
+    .style('background', 'rgba(0,0,0,0.6)')
+    .style('border-radius', '4px')
+    .style('color', '#fff')
+    .text('a simple tooltip');
+
+
 
 //read data
 
@@ -43,12 +59,17 @@ d3.csv("data/data.csv").then(function (data) {
 
 
     //place on the y axis
-
-
     svg1.append("g").attr()
     svg1.append("g")
         .attr("transform", "translate(" + margin.left + ", " + downshift + ")")
                                .call(d3.axisLeft(y));
+
+
+
+    //X value domains
+    x.domain(data.map(function(d) { return d.X; }));
+    // Y value domains
+    y.domain([0, 100]);
 
     //limit the x
     let x0 = d3.scaleBand()
@@ -74,6 +95,8 @@ d3.csv("data/data.csv").then(function (data) {
       .call(xAxis);
 
 
+//https://observablehq.com/@bsaienko/animated-bar-chart-with-tooltip
+//Used this website for hovering over bar.
      svg1.append("g")
         .selectAll("g")
         .data(data)
@@ -86,10 +109,24 @@ d3.csv("data/data.csv").then(function (data) {
             .attr("y", d => y(d.value))
             .attr("width", x1.bandwidth())
             .attr("height", d => height + downshift - y(d.value))
-            .attr("fill",'#ADD8E6' );
+            .attr("fill",'#f57842' )
+            .on('mouseover', function (d, i) {
+          tooltip
+            .html(
+              `<div>X: ${d.X}</div><div>Y: ${d.Y}</div>`
+            )
+            .style('visibility', 'visible');
+          d3.select(this).transition().attr('fill', hoverColor);
+      })
+      .on('mousemove', function () {
+          tooltip
+            .style('top', d3.event.pageY - 10 + 'px')
+            .style('left', d3.event.pageX + 10 + 'px');
+      })
+      .on('mouseout', function () {
+          tooltip.html(``).style('visibility', 'hidden');
+          d3.select(this).transition().attr('fill', staticColor);
+      });
 
-
-
-   
 
 })
