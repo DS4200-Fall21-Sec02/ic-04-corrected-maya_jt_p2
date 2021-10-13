@@ -1,7 +1,7 @@
 # D3-more-practice
 This repository is your starting point for ic-04. Assignment details and instructions are below. 
 
-Link to your GitHub pages website: `https://ds4200-fall21-sec02.github.io/ic-04-corrected-maya_jt_p2/`
+Link to your GitHub pages website: `(https://ds4200-fall21-sec02.github.io/ic-04-corrected-maya_jt_p2/)`
 
 # Aim of the assignment
 
