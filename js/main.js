@@ -121,4 +121,12 @@ d3.csv("data/data.csv").then(function (data) {
 
 })
 }
-
+{
+  switch (order) {
+    case "alphabetic": data.sort((a, b) => a.name.localeCompare(b.name)); break;
+    case "ascending": data.sort((a, b) => a.value - b.value); break;
+  }
+  x.domain(data.map(d => d.name));
+  chart.update();
+  return order;
+}
