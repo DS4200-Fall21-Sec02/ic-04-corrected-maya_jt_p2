@@ -1,3 +1,5 @@
+
+chart = {
 let margin = {
    top: 60,
    left: 50,
@@ -118,5 +120,5 @@ d3.csv("data/data.csv").then(function (data) {
      });
 
 })
-
+}
 
