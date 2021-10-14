@@ -1,4 +1,3 @@
-
 // write your javascript code here.
 // feel free to change the pre-set attributes as you see fit
 
@@ -35,7 +34,101 @@ let tooltip = d3
     .style('color', '#fff')
     .text('a simple tooltip');
 
+function update(Sorting) {
+  d3.csv("data/data.csv").then(function(data) {
+    svg1.selectAll("g > *").remove();
 
+    if (Sorting == 'ascending') {
+      data.sort(function(b, a) {
+        return  b.Y - a.Y; });
+      } else if (Sorting == 'alphabet') {
+        data.sort(function(a, b){
+          if(a.X < b.X) { return -1; }
+          if(a.X > b.X) { return 1; }
+          return 0;})
+        }
+
+    const x = d3.scaleBand()
+        .domain(list)
+        .range([0, width + 30])
+        .padding(1,2);
+
+        svg1.append("g")
+            .attr("transform", `translate(0, ${height})`)
+            .call(d3.axisBottom(x))
+            .selectAll("text")
+            .attr("transform", "translate(-10,0)rotate(-45)")
+            .style("text-anchor", "end");
+
+        const y = d3.scaleLinear()
+        .domain([0,100])
+        .range([height, 0]);
+
+        svg1.append("g")
+        .selectAll(".bar")
+        .data(data)
+        .enter()
+        .append("rect")
+        .attr("class", "bar")
+        .attr("x", d => x(d.X))
+        .attr("y", d => y(d.Y))
+        .transition()
+        .duration(750)
+        .attr("width", x.bandwidth())
+        .attr("height", d => height  - y(d.Y))
+        .attr("fill", "#ff0000");
+
+        svg1.append("g")
+        .selectAll("g")
+        .data(data)
+        .join("g")
+         .attr("transform", d => `translate(${x0(d[data.columns[0]])},0)`)
+            .selectAll("rect")
+            .data(d => col.map(key => ({key, value: d[key]})))
+            .join("rect")
+            .attr("x", d => x1(d.key) + 15 + margin.left)
+            .attr("y", d => y(d.value))
+            .attr("width", x1.bandwidth())
+            .attr("height", d => height + downshift - y(d.value))
+            .attr("fill",'#f57842' )
+            .on('mouseover', function (d, i) {
+          tooltip
+            .html(
+              `<div>X: ${i.value}</div><div>`
+            )
+            .style('visibility', 'visible');
+          d3.select(this).transition().attr('fill', hoverColor);
+      })
+      .on('mousemove', function () {
+          tooltip
+            .style('top', d3.event.pageY - 10 + 'px')
+            .style('left', d3.event.pageX + 10 + 'px');
+      })
+      .on('mouseout', function () {
+          tooltip.html(``).style('visibility', 'hidden');
+          d3.select(this).transition().attr('fill', staticColor);
+      });
+
+        //adding the x label
+        svg1.append("text")
+        .attr("class", "x label")
+        .attr("text-anchor", "end")
+        .attr("x", width - 220)
+        .attr("y", height + 30)
+        .text("X");
+
+        //adding the y label
+        svg1.append("text")
+        .attr("class", "y label")
+        .attr("text-anchor", "end")
+        .attr("y", 10)
+        .attr("x", -200)
+        .attr("dy", "-2.8em")
+        .attr("transform", "rotate(-90)")
+        .text("Y");
+      });
+
+    };
 
 //read data
 
@@ -90,11 +183,6 @@ d3.csv("data/data.csv").then(function (data) {
     xAxis = g => g
      .attr("transform", `translate(35, ${height + downshift})`)
         .call(d3.axisBottom(x).tickSize(0));
-
-
-
-
-
              svg1.append("g")
       .call(xAxis);
 
@@ -134,13 +222,3 @@ d3.csv("data/data.csv").then(function (data) {
 
 
 })
-
-{
-  switch (order) {
-    case "alphabetic": data.sort((a, b) => a.name.localeCompare(b.name)); break;
-    case "ascending": data.sort((a, b) => a.value - b.value); break;
-  }
-  x.domain(data.map(d => d.name));
-  svg1.update();
-  return order;
-}
