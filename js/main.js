@@ -117,7 +117,7 @@ d3.csv("data/data.csv").then(function (data) {
             .on('mouseover', function (d, i) {
           tooltip
             .html(
-              `<div>X: ${d.X}</div><div>Y: ${d.Y}</div>`
+              `<div>X: ${i.value}</div><div>`
             )
             .style('visibility', 'visible');
           d3.select(this).transition().attr('fill', hoverColor);
